@@ -7,29 +7,60 @@ import java.util.concurrent.ThreadLocalRandom;
 public class ProcessoSeletivo {
 
     public final static double SALARIO_BASE = 2000.00;
+
     public static void main(String[] args) throws Exception {
-        imprimirSelecionados();
+        ArrayList<String> candidatosSelecionados = imprimirSelecionados(); 
+
+        for (String candidato : candidatosSelecionados) {
+            entrarEmContato(candidato);
+        }
 
     }
 
-    static void imprimirSelecionados(){
-       ArrayList<String> candidatosSelecionados = selecaoCandidatos(); 
+    static void entrarEmContato(String candidato){
 
-       for (String candidato : candidatosSelecionados) {
-        System.out.println("Candidado selecionado: " + candidato);
-       }
+        int tentativasRealizadas = 1;
+        boolean continuarTentando = true;
+        boolean atendeu = false;
+
+        do {
+            atendeu = atender();
+            continuarTentando = !atendeu;
+            if (continuarTentando) {
+                tentativasRealizadas++;
+            } else {
+                System.out.println("Contato realizado com sucesso");
+            }
+        } while (continuarTentando && tentativasRealizadas < 3);
+
+        if(atendeu) {
+			System.out.println("CONSEGUIMOS CONTATO COM " + candidato +" NA " + tentativasRealizadas + " TENTATIVA");
+        } else {
+			System.out.println("NÃO CONSEGUIMOS CONTATO COM " + candidato +", NÚMERO MAXIMO TENTATIVAS " + tentativasRealizadas + " REALIZADA");
+        }
     }
 
-    // static boolean atender(){
-    //     return ThreadLocalRandom.current().nextInt(3)==1;
-    // }
+    static ArrayList<String> imprimirSelecionados() {
+        ArrayList<String> candidatosSelecionados = selecaoCandidatos();
 
-    static double valorPretendido(){
+        for (String candidato : candidatosSelecionados) {
+            System.out.println("Candidado selecionado: " + candidato);
+        }
+
+        return candidatosSelecionados;
+    }
+
+    static boolean atender() {
+        return ThreadLocalRandom.current().nextInt(3) == 1;
+    }
+
+    static double valorPretendido() {
         return ThreadLocalRandom.current().nextDouble(1800.00, 2100.00);
     }
 
-    static ArrayList<String> selecaoCandidatos(){
-        String[] candidatos = {"Bianca", "Osmar", "Natan", "Lucas", "Nathan", "Claudia", "Loide", "Ivanir", "Marli", "Gabriela"};
+    static ArrayList<String> selecaoCandidatos() {
+        String[] candidatos = { "Bianca", "Osmar", "Natan", "Lucas", "Nathan", "Claudia", "Loide", "Ivanir", "Marli",
+                "Gabriela" };
 
         int candidatosSelecionados = 0;
         int candidatoAtual = 0;
@@ -52,7 +83,7 @@ public class ProcessoSeletivo {
         return novaListaCandidatos;
     }
 
-    static void analisarCandidato(double salarioPretendido){
+    static void analisarCandidato(double salarioPretendido) {
 
         if (SALARIO_BASE > salarioPretendido) {
             System.out.println("Ligar para o candidato");
